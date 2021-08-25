@@ -57,10 +57,11 @@ export default function Video() {
     // if (!id || !name) navigation.push('/');
     const boot = async () => {
       const Peer = (await import('peerjs')).default;
-      peer = new Peer({
-        host: 'localhost',
-        port: 9000,
-        path: `${process.env.NEXT_PUBLIC_URL_PEER}`,
+      peer = new Peer(undefined , {
+        // path: "",
+        host:  'sc-poc-videochat-peerjs.herokuapp.com',
+        secure:true
+        // port: 443,
       });
 
       window.navigator.mediaDevices
