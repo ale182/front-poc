@@ -59,7 +59,7 @@ export default function Video() {
       const Peer = (await import('peerjs')).default;
       peer = new Peer(undefined , {
         // path: "",
-        host:  'sc-poc-videochat-peerjs.herokuapp.com',
+        host:  `${process.env.NEXT_PUBLIC_PEER_URL}`,
         secure:true
         // port: 443,
       });
@@ -88,18 +88,23 @@ export default function Video() {
       });
 
       peer.on('call', function (call: any) {
-        window.navigator.getUserMedia(
-          { video: true, audio: true },
-          (stream) => {
-            call.answer(stream);
-            const video = getVideo();
-            call.on('stream', function (remoteStream: any) {
-              addVideoStream(video, remoteStream);
-            });
-          },
-          (err) => {
-            console.log('Failed to get local stream', err);
-          }
+        const getUserMedia =
+            navigator.getUserMedia ||
+            navigator.webkitGetUserMedia ||
+            navigator.mozGetUserMedia ||
+            navigator.msGetUserMedia;
+        getUserMedia(
+            { video: true, audio: true },
+            (stream) => {
+              call.answer(stream);
+              const video = getVideo();
+              call.on('stream', function (remoteStream: any) {
+                addVideoStream(video, remoteStream);
+              });
+            },
+            (err) => {
+              console.log('Failed to get local stream', err);
+            }
         );
       });
     };
@@ -129,3 +134,4 @@ export default function Video() {
     </>
   );
 }
+
